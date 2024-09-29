@@ -84,6 +84,19 @@ int main()
         // dont bite more than you chew (APP_BUFFER_SIZE)
         read(client_fd, buffer, APP_BUFFER_SIZE);
         printf("Request: %s\n", buffer);
+
+        // we send the request back writing to the socket send buffer in the OS
+        char *response = "HTTP/1.1 200 OK\n"
+                         "Content-Type : text/plain\n"
+                         "Content-Length : 13\n\n"
+                         "Hello world !\n";
+
+        // write to the socket
+        // send queue os
+        write(client_fd, response, strlen(response));
+
+        // close the client connection
+        close(client_fd);
     }
 
     return 0;
