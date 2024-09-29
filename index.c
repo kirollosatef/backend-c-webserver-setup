@@ -57,5 +57,34 @@ int main()
         exit(EXIT_FAILURE);
     }
 
+    // [x, x, x, x, x, x, x, x, x, x]
+    // if a client connects, accept the connection
+    // [C, x, x, x, x, x, x, x, x, x]
+    // C is the client file descriptor
+    // accept returns the client file descriptor
+    // when the client connects full the kernel will not accept more connections
+
+    // we loop forever to accept connections
+    while (1)
+    {
+        printf("Waiting for a connection...\n");
+
+        // Accept the client connection client_fd == Connected (C)
+        // this blocks the execution until a client connects
+        // if the queue is empty we are stuck here...
+        if ((client_fd =
+                 accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&address_len)) < 0)
+        {
+            perror("Accept failed");
+            exit(EXIT_FAILURE);
+        }
+
+        // read the data from the OS recevive buffer to the application buffer
+        // this is essentially the same as the read function
+        // dont bite more than you chew (APP_BUFFER_SIZE)
+        read(client_fd, buffer, APP_BUFFER_SIZE);
+        printf("Request: %s\n", buffer);
+    }
+
     return 0;
 }
